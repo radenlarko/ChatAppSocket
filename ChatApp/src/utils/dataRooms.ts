@@ -19,22 +19,4 @@ export const dataRooms: DataRooms[] = [
       },
     ],
   },
-  {
-    id: '2',
-    name: 'Hacksquad Team 1',
-    messages: [
-      {
-        id: '2a',
-        text: "Guys, who's awake? 🙏🏽",
-        time: '12:50',
-        user: 'Team Leader',
-      },
-      {
-        id: '2b',
-        text: "What's up? 🧑🏻‍💻",
-        time: '03:50',
-        user: 'Victoria',
-      },
-    ],
-  },
 ];
