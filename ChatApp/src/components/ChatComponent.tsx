@@ -29,7 +29,7 @@ const ChatComponent = ({item}: Props) => {
     navigation.navigate('Messaging', {
       id: item.id,
       name: item.name,
-      messages: [],
+      messages: item.messages,
     });
   };
 

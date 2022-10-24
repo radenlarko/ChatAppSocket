@@ -1,18 +1,100 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {View, TextInput, Text, FlatList, Pressable} from 'react-native';
+import React, {useLayoutEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {StackParamList} from '../types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {styles} from '../utils/styles';
+import {Messages} from '../types/chat';
 
 type Props = NativeStackScreenProps<StackParamList, 'Messaging'>;
 
-const Messaging = ({navigation}: Props) => {
+const Messaging = ({route, navigation}: Props) => {
+  const [chatMessages, setChatMessages] = useState<Messages[]>([]);
+  const [message, setMessage] = useState('');
+  const [user, setUser] = useState('');
+
+  //👇🏻 Access the chatroom's name and id
+  const {name, id, messages} = route.params || {};
+
+  //👇🏻 This function gets the username saved on AsyncStorage
+  const getUsername = async () => {
+    try {
+      const value = await AsyncStorage.getItem('username');
+      if (value !== null) {
+        setUser(value);
+      }
+    } catch (e) {
+      console.error('Error while loading username!');
+    }
+  };
+
+  //👇🏻 Sets the header title to the name chatroom's name
+  useLayoutEffect(() => {
+    navigation.setOptions({title: name});
+    getUsername();
+    setChatMessages(messages ?? []);
+  }, [name, messages]);
+
+  /*👇🏻 
+    This function gets the time the user sends a message, then 
+    logs the username, message, and the timestamp to the console.
+ */
+  const handleNewMessage = () => {
+    const hour =
+      new Date().getHours() < 10
+        ? `0${new Date().getHours()}`
+        : `${new Date().getHours()}`;
+
+    const mins =
+      new Date().getMinutes() < 10
+        ? `0${new Date().getMinutes()}`
+        : `${new Date().getMinutes()}`;
+
+    console.log({
+      message,
+      user,
+      timestamp: {hour, mins},
+    });
+  };
+
   return (
-    <View>
-      <Text>Messaging</Text>
+    <View style={styles.messagingscreen}>
+      <View
+        style={[
+          styles.messagingscreen,
+          {paddingVertical: 15, paddingHorizontal: 10},
+        ]}>
+        {chatMessages[0] ? (
+          <FlatList
+            data={chatMessages}
+            renderItem={({item}) => (
+              <View>
+                <Text>{item.text}</Text>
+              </View>
+            )}
+            keyExtractor={item => item.id}
+          />
+        ) : (
+          ''
+        )}
+      </View>
+
+      <View style={styles.messaginginputContainer}>
+        <TextInput
+          style={styles.messaginginput}
+          placeholder="type message"
+          onChangeText={value => setMessage(value)}
+        />
+        <Pressable
+          style={styles.messagingbuttonContainer}
+          onPress={handleNewMessage}>
+          <View>
+            <Text style={{color: '#f2f0f1', fontSize: 20}}>SEND</Text>
+          </View>
+        </Pressable>
+      </View>
     </View>
   );
 };
 
 export default Messaging;
-
-const styles = StyleSheet.create({});
