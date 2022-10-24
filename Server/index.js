@@ -16,8 +16,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
+const generateID = () => Math.random().toString(36).substring(2, 10);
+let chatRooms = [];
+
 socketIO.on("connection", (socket) => {
   console.log(`⚡: ${socket.id} user just connected!`);
+
+  socket.on("createRoom", (roomName) => {
+    socket.join(roomName);
+    //👇🏻 Adds the new group name to the chat rooms array
+    chatRooms.unshift({ id: generateID(), roomName, messages: [] });
+    //👇🏻 Returns the updated chat rooms via another event
+    socket.emit("roomsList", chatRooms);
+  });
 
   socket.on("disconnect", () => {
     socket.disconnect();
@@ -26,9 +37,7 @@ socketIO.on("connection", (socket) => {
 });
 
 app.get("/api", (req, res) => {
-  res.json({
-    message: "Hello world",
-  });
+  res.json(chatRooms);
 });
 
 app.listen(PORT, () => {

@@ -1,6 +1,7 @@
 import {Text, View, TextInput, Pressable} from 'react-native';
 import React, {useState} from 'react';
 import {styles} from '../utils/styles';
+import socket from '../utils/socket'
 
 interface Props {
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,7 +15,8 @@ const ModalCreateGroup = ({setVisible}: Props) => {
 
   //👇🏻 Logs the group name to the console
   const handleCreateRoom = () => {
-    console.log({groupName});
+    //👇🏻 sends a message containing the group name to the server
+    socket.emit("createRoom", groupName);
     closeModal();
   };
   return (
