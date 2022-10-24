@@ -4,48 +4,10 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {StackParamList} from '../types';
 import Feather from 'react-native-vector-icons/Feather';
 import {styles} from '../utils/styles';
+import {dataRooms} from '../utils/dataRooms';
+import ChatComponent from '../components/ChatComponent';
 
 type Props = NativeStackScreenProps<StackParamList, 'Chat'>;
-
-//👇🏻 Dummy list of rooms
-const rooms = [
-  {
-    id: '1',
-    name: 'Novu Hangouts',
-    messages: [
-      {
-        id: '1a',
-        text: 'Hello guys, welcome!',
-        time: '07:50',
-        user: 'Tomer',
-      },
-      {
-        id: '1b',
-        text: 'Hi Tomer, thank you! 😇',
-        time: '08:50',
-        user: 'David',
-      },
-    ],
-  },
-  {
-    id: '2',
-    name: 'Hacksquad Team 1',
-    messages: [
-      {
-        id: '2a',
-        text: "Guys, who's awake? 🙏🏽",
-        time: '12:50',
-        user: 'Team Leader',
-      },
-      {
-        id: '2b',
-        text: "What's up? 🧑🏻‍💻",
-        time: '03:50',
-        user: 'Victoria',
-      },
-    ],
-  },
-];
 
 const Chat = ({navigation}: Props) => {
   return (
@@ -59,14 +21,10 @@ const Chat = ({navigation}: Props) => {
         </View>
       </View>
       <View style={styles.chatlistContainer}>
-        {rooms.length > 0 ? (
+        {dataRooms.length > 0 ? (
           <FlatList
-            data={rooms}
-            renderItem={({item}) => (
-              <View>
-                <Text>Tes {item.name}</Text>
-              </View>
-            )}
+            data={dataRooms}
+            renderItem={({item}) => <ChatComponent item={item} />}
             keyExtractor={item => item.id}
           />
         ) : (
