@@ -1,18 +1,83 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {View, Text, Pressable, SafeAreaView, FlatList} from 'react-native';
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {StackParamList} from '../types';
+import Feather from 'react-native-vector-icons/Feather';
+import {styles} from '../utils/styles';
 
 type Props = NativeStackScreenProps<StackParamList, 'Chat'>;
 
+//👇🏻 Dummy list of rooms
+const rooms = [
+  {
+    id: '1',
+    name: 'Novu Hangouts',
+    messages: [
+      {
+        id: '1a',
+        text: 'Hello guys, welcome!',
+        time: '07:50',
+        user: 'Tomer',
+      },
+      {
+        id: '1b',
+        text: 'Hi Tomer, thank you! 😇',
+        time: '08:50',
+        user: 'David',
+      },
+    ],
+  },
+  {
+    id: '2',
+    name: 'Hacksquad Team 1',
+    messages: [
+      {
+        id: '2a',
+        text: "Guys, who's awake? 🙏🏽",
+        time: '12:50',
+        user: 'Team Leader',
+      },
+      {
+        id: '2b',
+        text: "What's up? 🧑🏻‍💻",
+        time: '03:50',
+        user: 'Victoria',
+      },
+    ],
+  },
+];
+
 const Chat = ({navigation}: Props) => {
   return (
-    <View>
-      <Text>Chat</Text>
-    </View>
+    <SafeAreaView style={styles.chatscreen}>
+      <View style={styles.chattopContainer}>
+        <View style={styles.chatheader}>
+          <Text style={styles.chatheading}>Chats</Text>
+          <Pressable onPress={() => console.log('Button Pressed!')}>
+            <Feather name="edit" size={24} color="green" />
+          </Pressable>
+        </View>
+      </View>
+      <View style={styles.chatlistContainer}>
+        {rooms.length > 0 ? (
+          <FlatList
+            data={rooms}
+            renderItem={({item}) => (
+              <View>
+                <Text>Tes {item.name}</Text>
+              </View>
+            )}
+            keyExtractor={item => item.id}
+          />
+        ) : (
+          <View style={styles.chatemptyContainer}>
+            <Text style={styles.chatemptyText}>No rooms created!</Text>
+            <Text>Click the icon above to create a Chat room</Text>
+          </View>
+        )}
+      </View>
+    </SafeAreaView>
   );
 };
 
 export default Chat;
-
-const styles = StyleSheet.create({});
