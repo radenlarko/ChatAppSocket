@@ -1,9 +1,10 @@
 import {View, TextInput, Text, FlatList, Pressable} from 'react-native';
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {StackParamList} from '../types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {styles} from '../utils/styles';
+import socket from '../utils/socket';
 import {Messages} from '../types/chat';
 import MessageComponent from '../components/MessageComponent';
 
@@ -33,8 +34,9 @@ const Messaging = ({route, navigation}: Props) => {
   useLayoutEffect(() => {
     navigation.setOptions({title: name});
     getUsername();
-    setChatMessages(messages ?? []);
-  }, [name, messages]);
+    socket.emit('findRoom', id);
+    socket.on('foundRoom', roomChats => setChatMessages(roomChats));
+  }, [name]);
 
   /*👇🏻 
     This function gets the time the user sends a message, then 
@@ -51,12 +53,19 @@ const Messaging = ({route, navigation}: Props) => {
         ? `0${new Date().getMinutes()}`
         : `${new Date().getMinutes()}`;
 
-    console.log({
-      message,
-      user,
-      timestamp: {hour, mins},
-    });
+    if (user) {
+      socket.emit('newMessage', {
+        message,
+        room_id: id,
+        user,
+        timestamp: {hour, mins},
+      });
+    }
   };
+
+  useEffect(() => {
+    socket.on('foundRoom', roomChats => setChatMessages(roomChats));
+  }, [socket]);
 
   return (
     <View style={styles.messagingscreen}>
