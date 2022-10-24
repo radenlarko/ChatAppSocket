@@ -60,6 +60,7 @@ const Messaging = ({route, navigation}: Props) => {
         user,
         timestamp: {hour, mins},
       });
+      setMessage('');
     }
   };
 
@@ -91,6 +92,7 @@ const Messaging = ({route, navigation}: Props) => {
         <TextInput
           style={styles.messaginginput}
           placeholder="type message"
+          value={message}
           onChangeText={value => setMessage(value)}
         />
         <Pressable

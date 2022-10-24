@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import { initialDataChat } from "./initialDataChat.js";
 
 const app = express();
 const httpServer = createServer();
@@ -17,8 +18,9 @@ app.use(express.json());
 app.use(cors());
 
 const generateID = () => Math.random().toString(36).substring(2, 10);
-let chatRooms = [];
+let chatRooms = initialDataChat;
 
+httpServer.listen(5000);
 socketIO.on("connection", (socket) => {
   console.log(`⚡: ${socket.id} user just connected!`);
 
@@ -38,7 +40,6 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("newMessage", (data) => {
-    console.log("new message: ", data)
     const { room_id, message, user, timestamp } = data;
     let result = chatRooms.filter((room) => room.id == room_id);
     const newMessage = {
