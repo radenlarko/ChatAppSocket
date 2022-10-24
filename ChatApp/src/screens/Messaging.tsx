@@ -5,6 +5,7 @@ import {StackParamList} from '../types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {styles} from '../utils/styles';
 import {Messages} from '../types/chat';
+import MessageComponent from '../components/MessageComponent';
 
 type Props = NativeStackScreenProps<StackParamList, 'Messaging'>;
 
@@ -68,9 +69,7 @@ const Messaging = ({route, navigation}: Props) => {
           <FlatList
             data={chatMessages}
             renderItem={({item}) => (
-              <View>
-                <Text>{item.text}</Text>
-              </View>
+              <MessageComponent item={item} user={user} />
             )}
             keyExtractor={item => item.id}
           />
