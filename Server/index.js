@@ -20,7 +20,6 @@ app.use(cors());
 const generateID = () => Math.random().toString(36).substring(2, 10);
 let chatRooms = initialDataChat;
 
-httpServer.listen(5000);
 socketIO.on("connection", (socket) => {
   console.log(`⚡: ${socket.id} user just connected!`);
 
@@ -28,14 +27,14 @@ socketIO.on("connection", (socket) => {
     console.log("create room: ", name);
     socket.join(name);
     chatRooms.unshift({ id: generateID(), name, messages: [] });
-    socket.emit("roomsList", chatRooms);
+    socketIO.emit("roomsList", chatRooms);
   });
 
   socket.on("findRoom", (id) => {
     console.log("find room: ", id);
     let result = chatRooms.filter((room) => room.id == id);
     // console.log(chatRooms);
-    socket.emit("foundRoom", result[0].messages);
+    socketIO.emit("foundRoom", result[0]?.messages);
     // console.log("Messages Form", result[0].messages);
   });
 
@@ -52,8 +51,8 @@ socketIO.on("connection", (socket) => {
     socket.to(result[0].name).emit("roomMessage", newMessage);
     result[0].messages.push(newMessage);
 
-    socket.emit("roomsList", chatRooms);
-    socket.emit("foundRoom", result[0].messages);
+    socketIO.emit("roomsList", chatRooms);
+    socketIO.emit("foundRoom", result[0].messages);
   });
 
   socket.on("disconnect", () => {
@@ -68,4 +67,8 @@ app.get("/api", (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
+});
+
+httpServer.listen(5000, () => {
+  console.log("Socket listening on 5000");
 });

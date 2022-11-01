@@ -22,7 +22,7 @@ const ChatComponent = ({item}: Props) => {
     if (item.messages.length !== 0) {
       setMessages(item.messages[item.messages.length - 1]);
     }
-  }, []);
+  }, [item]);
 
   ///👇🏻 Navigates to the Messaging screen
   const handleNavigation = () => {
